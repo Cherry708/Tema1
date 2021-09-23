@@ -1,31 +1,33 @@
 package exercicis
 
 import java.io.File
+import java.text.SimpleDateFormat;
 
-/*
-println("Introdueix un numero (-1 per acabar): ")
-                userInput = readLine()!!.toInt()
-                if (userInput != -1 && userInput <= f.listFiles().size && f.listFiles().get(userInput).isDirectory){
-                    f = f.listFiles().sorted().get(userInput)
+/**
+ * Ejercicio 1.
+ * Este programa está destinado a listar y facilitar la navegación
+ * por los ficheros y directorios del root de un sistema de ficheros
+ * Linux o de una unidad de Windows a través del método listRoots()
+ * de la clase File.
+ * Durante el listado puede mostrar lo siguiente sobre el fichero:
+ * 1.- Nombre
+ * 2.- Directorio o fichero
+ * 3.- Tamaño del fichero
+ * 4.- Permisos del directorio o fichero
+ * 5.- Fecha de última modificación del directorio o fichero
+ *
+ * Rubén Serrano Cano 2ºDAM
  */
 
 fun main() {
 
     var userInput = 0
     val userInputOffset = 1
-    var userSelection = 0
+    var userSelection: Int
     var f = File.listRoots()[0]
-
 
     listarDirectorios(f)
 
-    /*
-    TODO:
-    S'ha de controlar que hi ha permís de lectura sobre un directori, abans de canviar a ell,
-    sinó donarà error (en la imatge, per exemple, segurament no es podrà canviar al directori root,
-    ja que no tindrem permís de lectura sobre ell). Aquesta comprovació s'ha de fer abans de canviar
-    al directori triat.
-     */
     while (userInput != -1) {
 
         try {
@@ -33,12 +35,8 @@ fun main() {
                 userInput = readLine()!!.toInt()
                 userSelection = userInput - userInputOffset
 
-            //En esta condicion verificamos que el input sea 0, no debemos usar userSelection
-            //Si retrocedo en root peta, prueba try catch
-
             if (userInput == 0 && f.parentFile.exists()) {
 
-                //f.parentFile
                 f = f.parentFile
                 listarDirectorios(f)
 
@@ -78,28 +76,36 @@ fun main() {
             println("Estás en: "+f.canonicalPath)
 
         }
-
-        //If end is not a directory, f:FILE will not be reassigned so 'if' in this branch will happen
-
     }
 }
 
-//fun isFile(f: File)
 
 /**
  * Devuelve si el elemento de la lista ordenada de ficheros es o no legible.
- * @param f directorio desde el que listaremos el contenido
- * @param userSelection entrada de usurio junto con desplazamiento empleada para obtener el elemento deseado
+ * @param f directorio desde el que listaremos el contenido.
+ * @param userSelection entrada de usuario junto con desplazamiento, empleada para obtener el elemento deseado.
  */
 fun isReadable(f: File, userSelection:Int): Boolean{
     return f.listFiles().sorted().get(userSelection).canRead()
 }
 
+/**
+ * Devuelve si el elemento de la lista ordenada de ficheros es o no un directorio
+ * @param f directorio desde el que listaremos el contenido.
+ * @param userSelection entrada de usuario junto con desplazamiento, empleada para obtener el elemento deseado.
+ */
 fun isDirectory(f: File, userSelection:Int): Boolean{
     return f.listFiles().sorted().get(userSelection).isDirectory
 }
 
+/**
+ * Muestra información diferente de todos los ficheros del directorio actual por consola,
+ * es capaz de especificar el nombre, si es directorio o fichero, el tamaño,
+ * mostrar permisos y la última fecha de modificación.
+ * @param f directorio desde el que listaremos el contenido.
+ */
 fun listarDirectorios(f: File) {
+    val sdf = SimpleDateFormat("MM-dd-yyyy HH:mm:ss")
     val s = "Lista de ficheros y directorios del directorio " + f.getCanonicalPath()
     println(s)
     println("-".repeat(s.length))
@@ -107,10 +113,37 @@ fun listarDirectorios(f: File) {
     var fileCounter = 1
     println("0.- Introduce 0 para volver al parent")
     for (file in f.listFiles().sorted()) {
-        if (file.isFile())
-            println("$fileCounter.- " + file.getName() + "\t " + "<Fichero>"+"[Tamaño: "+file.length()+"]")
-        if (file.isDirectory())
-            println("$fileCounter.- " + file.getName() + "\t <Directorio>")
+        if (file.isFile && file.canRead() && file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [rwx] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [rw-] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [r--] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && !file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [---] "+sdf.format(file.lastModified()))
+
+        if (file.isDirectory && file.canRead() && file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() +
+                    "\t <Directorio>"+" [rwx] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() +
+                    "\t <Directorio>"+" [rw-] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() +
+                    "\t <Directorio>"+" [r--] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() +
+                    "\t <Directorio>"+" [---] "+sdf.format(file.lastModified()))
         fileCounter++
     }
 }
