@@ -113,6 +113,7 @@ fun listarDirectorios(f: File) {
     var fileCounter = 1
     println("0.- Introduce 0 para volver al parent")
     for (file in f.listFiles().sorted()) {
+
         if (file.isFile && file.canRead() && file.canWrite() && file.canExecute())
             println("$fileCounter.- " + file.getName() + "\t "
                     + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [rwx] "+sdf.format(file.lastModified()))
@@ -129,6 +130,65 @@ fun listarDirectorios(f: File) {
             println("$fileCounter.- " + file.getName() + "\t "
                     + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [---] "+sdf.format(file.lastModified()))
 
+        else if (file.isFile && !file.canRead() && !file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [--x] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && !file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [-w-] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [rw-] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && file.canRead() && !file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [r-x] "+sdf.format(file.lastModified()))
+
+        else if (file.isFile && !file.canRead() && file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Fichero>"+"[Tamaño: "+file.length()+"]"+" [-wx] "+sdf.format(file.lastModified()))
+
+
+
+        if (file.isDirectory && file.canRead() && file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [rwx] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [rw-] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [r--] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [---] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && !file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [--x] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [-w-] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [rw-] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && file.canRead() && !file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [r-x] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && file.canWrite() && file.canExecute())
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directorio>"+" [-wx] "+sdf.format(file.lastModified()))
+
+        /*
         if (file.isDirectory && file.canRead() && file.canWrite() && file.canExecute())
             println("$fileCounter.- " + file.getName() +
                     "\t <Directorio>"+" [rwx] "+sdf.format(file.lastModified()))
@@ -144,6 +204,19 @@ fun listarDirectorios(f: File) {
         else if (file.isDirectory && !file.canRead() && !file.canWrite() && !file.canExecute())
             println("$fileCounter.- " + file.getName() +
                     "\t <Directorio>"+" [---] "+sdf.format(file.lastModified()))
+
+        else if (file.isDirectory && !file.canRead() && !file.canWrite() && !file.canExecute())
+            println("$fileCounter.- " + file.getName() +
+                    "\t <Directorio>"+" [---] "+sdf.format(file.lastModified()))
+        /*
+        else if (file.isDirectory){
+            println("$fileCounter.- " + file.getName() + "\t "
+                    + "<Directory>"+"[Tamaño: "+file.length()+"]"+" [---] "+sdf.format(file.lastModified()))
+        }
+
+         */
+
+         */
         fileCounter++
     }
 }
